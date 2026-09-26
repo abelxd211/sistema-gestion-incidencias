@@ -29,6 +29,5 @@ contextBridge.exposeInMainWorld('api', {
   marcarNotificacionLeida: (id) => ipcRenderer.invoke('marcar-notificacion-leida', id),
   sugerirClasificacion: (data) => ipcRenderer.invoke('sugerir-clasificacion', data),
   generarDiagnostico: (id) => ipcRenderer.invoke('generar-diagnostico', id),
-  buscarIncidencias: (q) => ipcRenderer.invoke('buscar-incidencias', q),
   buscarDuplicados: (data) => ipcRenderer.invoke('buscar-duplicados', data)
 });

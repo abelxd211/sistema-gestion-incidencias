@@ -1186,36 +1186,8 @@ ipcMain.handle('generar-diagnostico', async (event, idIncidencia) => {
 });
 
 // -----------------------------------------------------------------------
-// BÚSQUEDA GLOBAL (Ctrl+K) Y DETECCIÓN DE DUPLICADOS
+// DETECCIÓN DE DUPLICADOS (registro de incidencia)
 // -----------------------------------------------------------------------
-
-ipcMain.handle('buscar-incidencias', async (event, q) => {
-  if (!currentUser) throw new Error('No hay sesión activa.');
-
-  const esEmpleado = currentUser.rol === 'Empleado';
-  const termino = `%${String(q || '').trim()}%`;
-
-  const [rows] = await pool.query(
-    `SELECT i.id_incidencia, i.titulo, i.descripcion, i.fecha_creacion,
-            e.nombre AS estado, p.nombre AS prioridad, a.nombre AS area
-     FROM incidencias i
-     JOIN estados e ON e.id_estado = i.id_estado
-     JOIN prioridades p ON p.id_prioridad = i.id_prioridad
-     JOIN areas a ON a.id_area = i.id_area
-     WHERE (i.titulo LIKE ?
-            OR i.descripcion LIKE ?
-            OR a.nombre LIKE ?
-            OR e.nombre LIKE ?
-            OR p.nombre LIKE ?)
-     ${esEmpleado ? 'AND i.id_usuario_reporta = ?' : ''}
-     ORDER BY i.fecha_actualizacion DESC
-     LIMIT 8`,
-    esEmpleado
-      ? [termino, termino, termino, termino, termino, currentUser.id_usuario]
-      : [termino, termino, termino, termino, termino]
-  );
-  return rows;
-});
 
 const PALABRAS_IRRELEVANTES = new Set([
   'para', 'pero', 'como', 'cuando', 'donde', 'este', 'esta', 'estos', 'estas', 'desde',

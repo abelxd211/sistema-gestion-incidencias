@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Registrar incidencia</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <script>try{var t=localStorage.getItem('tema');if(t==='oscuro')document.documentElement.classList.add('tema-oscuro');}catch(e){}</script>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="sidebar-brand">
+        <span class="brand-mark">GI</span>
+        <span class="brand-name">Gestión de<br />Incidencias</span>
+      </div>
+
+      <nav class="sidebar-nav">
+        <a href="dashboard.html" class="nav-link"><span>Incidencias</span></a>
+        <a href="tablero.html" class="nav-link"><span>Tablero</span></a>
+        <a href="nueva.html" class="nav-link active"><span>Registrar incidencia</span></a>
+        <a href="usuarios.html" class="nav-link link-nav"><span>Usuarios</span></a>
+        <a href="reportes.html" class="nav-link link-nav"><span>Reportes</span></a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="user-chip">
+          <span class="user-avatar"></span>
+          <span id="usuario-actual"></span>
+        </div>
+        <button id="btn-logout" type="button">Cerrar sesión</button>
+      </div>
+    </aside>
+
+    <div class="main-area">
+      <header class="page-header">
+        <h1>Registrar nueva incidencia</h1>
+      </header>
+
+      <main>
+        <section class="panel" style="max-width: 680px;">
+          <h2>Nueva incidencia</h2>
+          <form id="form-incidencia">
+            <label>
+              Título
+              <input type="text" id="titulo" required maxlength="200" />
+            </label>
+
+            <label>
+              Descripción
+              <textarea id="descripcion" required rows="4"></textarea>
+            </label>
+
+            <div id="aviso-duplicados" class="aviso-duplicados" hidden></div>
+
+            <div class="grid-2">
+              <label>
+                Área
+                <select id="id_area" required></select>
+              </label>
+
+              <label>
+                Categoría
+                <select id="id_categoria" required></select>
+              </label>
+
+              <label>
+                Prioridad
+                <select id="id_prioridad" required></select>
+              </label>
+
+              <label>
+                Impacto
+                <select id="id_impacto" required></select>
+              </label>
+            </div>
+
+            <label>
+              Encargado responsable <span style="color: var(--danger)">*</span>
+              <select id="id_usuario_asignado" required></select>
+              <span class="sla-detalle">
+                Obligatorio: sin encargado asignado la incidencia no podrá cambiar de estado.
+              </span>
+            </label>
+
+            <button type="button" id="btn-sugerir-ia" class="btn-ia">✨ Sugerir categoría y prioridad con IA</button>
+            <button type="submit">Registrar incidencia</button>
+          </form>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <div id="toast-container" class="toast-container"></div>
+
+  <script src="ui.js"></script>
+  <script src="toast.js"></script>
+  <script src="chrome.js"></script>
+  <script src="nueva.js"></script>
+</body>
+</html>

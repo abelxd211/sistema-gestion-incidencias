@@ -1,0 +1,5 @@
+{
+  "url": "https://api.groq.com/openai/v1/chat/completions",
+  "key": "PEGA_AQUI_TU_API_KEY_DE_GROQ",
+  "model": "openai/gpt-oss-120b"
+}

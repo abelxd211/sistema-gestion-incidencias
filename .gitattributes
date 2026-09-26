@@ -1,0 +1,17 @@
+# Normaliza los saltos de línea: en el repo se guardan LF, en Windows se
+# trabaja con CRLF. Así todos los colaboradores ven los mismos diffs.
+* text=auto eol=lf
+
+# Archivos que deben conservar LF
+*.js   text eol=lf
+*.json text eol=lf
+*.css  text eol=lf
+*.html text eol=lf
+*.md   text eol=lf
+*.sql  text eol=lf
+
+# Binarios
+*.png  binary
+*.jpg  binary
+*.ico  binary
+*.exe  binary

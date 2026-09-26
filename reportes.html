@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Reportes y análisis</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <script>try{var t=localStorage.getItem('tema');if(t==='oscuro')document.documentElement.classList.add('tema-oscuro');}catch(e){}</script>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="sidebar-brand">
+        <span class="brand-mark">GI</span>
+        <span class="brand-name">Gestión de<br />Incidencias</span>
+      </div>
+
+      <nav class="sidebar-nav">
+        <a href="dashboard.html" class="nav-link"><span>Incidencias</span></a>
+        <a href="tablero.html" class="nav-link"><span>Tablero</span></a>
+        <a href="nueva.html" class="nav-link"><span>Registrar incidencia</span></a>
+        <a href="usuarios.html" class="nav-link link-nav"><span>Usuarios</span></a>
+        <a href="reportes.html" class="nav-link link-nav active"><span>Reportes</span></a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="user-chip">
+          <span class="user-avatar"></span>
+          <span id="usuario-actual"></span>
+        </div>
+        <button id="btn-logout" type="button">Cerrar sesión</button>
+      </div>
+    </aside>
+
+    <div class="main-area">
+      <header class="page-header">
+        <h1>📊 Reportes y análisis</h1>
+      </header>
+
+      <main>
+        <div class="toolbar-acciones">
+          <button type="button" id="btn-csv" class="btn-exportar">📄 CSV</button>
+          <button type="button" id="btn-excel" class="btn-exportar">📊 Excel</button>
+          <button type="button" id="btn-pdf" class="btn-exportar">🖨️ PDF</button>
+          <button type="button" id="btn-imprimir" class="btn-exportar">✨ Imprimir</button>
+        </div>
+
+        <div class="tarjetas-resumen">
+          <div class="tarjeta">
+            <span class="tarjeta-numero" id="total-incidencias">—</span>
+            <span class="tarjeta-etiqueta">📌 Incidencias totales</span>
+          </div>
+          <div class="tarjeta">
+            <span class="tarjeta-numero" id="tiempo-promedio">—</span>
+            <span class="tarjeta-etiqueta">⏱️ Horas promedio de resolución</span>
+          </div>
+          <div class="tarjeta">
+            <span class="tarjeta-numero" id="sla-cumplimiento">—</span>
+            <span class="tarjeta-etiqueta">🎯 Cumplimiento del SLA</span>
+          </div>
+          <div class="tarjeta">
+            <span class="tarjeta-numero" id="sla-vencidas">—</span>
+            <span class="tarjeta-etiqueta">🚨 Abiertas ya vencidas</span>
+          </div>
+        </div>
+
+        <section class="panel" style="margin-top:18px;">
+          <h2>🎯 Cumplimiento del SLA</h2>
+          <p class="subtexto">
+            Porcentaje de incidencias <strong>resueltas dentro del plazo pactado</strong> según su
+            prioridad (Baja 72 h · Media 48 h · Alta 24 h · Crítica 6 h). Solo se cuentan las que
+            pasaron por el estado "Resuelta".
+          </p>
+          <div id="sla-resumen" class="sla-resumen"></div>
+          <div id="sla-por-prioridad" class="grafico-barras" style="margin-top:14px;"></div>
+        </section>
+
+        <section class="panel" style="margin-top:18px;">
+          <h2>🏢 Cumplimiento por área</h2>
+          <p class="subtexto">Ordenado de peor a mejor cumplimiento.</p>
+          <div class="tabla-scroll">
+            <table id="tabla-sla-area">
+              <thead>
+                <tr>
+                  <th>Área</th>
+                  <th>A tiempo</th>
+                  <th>Cumplimiento</th>
+                  <th>Promedio</th>
+                </tr>
+              </thead>
+              <tbody id="tbody-sla-area"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="panel" style="margin-top:18px;">
+          <h2>👤 Cumplimiento por responsable</h2>
+          <p class="subtexto">Solo incidencias que tienen responsable asignado.</p>
+          <div class="tabla-scroll">
+            <table id="tabla-sla-responsable">
+              <thead>
+                <tr>
+                  <th>Responsable</th>
+                  <th>A tiempo</th>
+                  <th>Cumplimiento</th>
+                  <th>Promedio</th>
+                </tr>
+              </thead>
+              <tbody id="tbody-sla-responsable"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="panel" style="margin-top:18px;">
+          <h2>🚨 Abiertas que ya superaron su SLA</h2>
+          <p class="subtexto">
+            Incidencias sin resolver cuyo plazo ya venció. Es el riesgo actual: requieren
+            atención inmediata.
+          </p>
+          <div class="tabla-scroll">
+            <table id="tabla-sla-vencidas">
+              <thead>
+                <tr>
+                  <th>Área</th>
+                  <th>Prioridad</th>
+                  <th>Plazo SLA</th>
+                  <th>Vencidas</th>
+                  <th>Retraso prom.</th>
+                  <th>Peor retraso</th>
+                </tr>
+              </thead>
+              <tbody id="tbody-sla-vencidas"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <div class="detalle-grid">
+          <section class="panel">
+            <h2>📊 Distribución por estado</h2>
+            <div id="grafico-estado" class="grafico-barras"></div>
+          </section>
+
+          <section class="panel">
+            <h2>🔥 Problemas más frecuentes (categoría)</h2>
+            <div id="grafico-categoria" class="grafico-barras"></div>
+          </section>
+        </div>
+
+        <section class="panel" style="margin-top:18px;">
+          <h2>🏢 Áreas con más reportes</h2>
+          <div id="grafico-area" class="grafico-barras"></div>
+        </section>
+
+        <section class="panel" style="margin-top:18px;">
+          <h2>🔁 Incidencias recurrentes (área + categoría)</h2>
+          <p class="subtexto">
+            Combinaciones de área + categoría que se han repetido 2 veces o más — una señal de que
+            algo en esa área o categoría necesita atención estructural, no solo una solución puntual.
+          </p>
+          <table id="tabla-recurrentes">
+            <thead>
+              <tr>
+                <th>Área</th>
+                <th>Categoría</th>
+                <th>Veces reportado</th>
+                <th>Última vez</th>
+              </tr>
+            </thead>
+            <tbody id="tbody-recurrentes"></tbody>
+          </table>
+        </section>
+
+        <section class="panel" style="margin-top:18px;">
+          <h2>🔥 Áreas con incidencias repetidas (2 o más)</h2>
+          <p class="subtexto">
+            Áreas que acumulan 2 o más incidencias en total, sin importar si son del mismo tipo.
+            Muestra dónde se concentra el trabajo y si se trata de un mismo problema repetido
+            (1 sola categoría) o de varios problemas distintos.
+          </p>
+          <table id="tabla-areas-calientes">
+            <thead>
+              <tr>
+                <th>Área</th>
+                <th>Incidencias</th>
+                <th>Categorías distintas</th>
+                <th>Diagnóstico</th>
+                <th>Última vez</th>
+              </tr>
+            </thead>
+            <tbody id="tbody-areas-calientes"></tbody>
+          </table>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <div id="toast-container" class="toast-container"></div>
+
+  <script src="ui.js"></script>
+  <script src="toast.js"></script>
+  <script src="chrome.js"></script>
+  <script src="reportes.js"></script>
+</body>
+</html>

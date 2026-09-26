@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Detalle de incidencia</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <script>try{var t=localStorage.getItem('tema');if(t==='oscuro')document.documentElement.classList.add('tema-oscuro');}catch(e){}</script>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="sidebar-brand">
+        <span class="brand-mark">GI</span>
+        <span class="brand-name">Gestión de<br />Incidencias</span>
+      </div>
+
+      <nav class="sidebar-nav">
+        <a href="dashboard.html" class="nav-link active"><span>Incidencias</span></a>
+        <a href="tablero.html" class="nav-link"><span>Tablero</span></a>
+        <a href="nueva.html" class="nav-link"><span>Registrar incidencia</span></a>
+        <a href="usuarios.html" class="nav-link link-nav"><span>Usuarios</span></a>
+        <a href="reportes.html" class="nav-link link-nav"><span>Reportes</span></a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="user-chip">
+          <span class="user-avatar"></span>
+          <span id="usuario-actual"></span>
+        </div>
+        <button id="btn-logout" type="button">Cerrar sesión</button>
+      </div>
+    </aside>
+
+    <div class="main-area">
+      <header class="page-header">
+        <h1>Detalle de incidencia</h1>
+      </header>
+
+      <main>
+        <section class="panel" id="panel-info">
+          <!-- Se llena con JS -->
+        </section>
+
+        <div class="detalle-grid">
+          <section class="panel" id="panel-gestion">
+            <h2>Gestión</h2>
+
+            <div class="gestion-item">
+              <label>
+                Asignar responsable
+                <select id="select-responsable"></select>
+              </label>
+              <button id="btn-asignar" type="button">Asignar</button>
+            </div>
+          </section>
+
+          <section class="panel">
+            <h2>Historial de cambios</h2>
+            <ul class="timeline" id="lista-historial"></ul>
+          </section>
+        </div>
+
+        <section class="panel">
+          <h2>Comentarios</h2>
+          <ul class="comentarios" id="lista-comentarios"></ul>
+
+          <form id="form-comentario">
+            <textarea id="nuevo-comentario" rows="2" placeholder="Escribe un comentario..." required></textarea>
+            <button type="submit">Comentar</button>
+          </form>
+        </section>
+
+        <section class="panel panel-peligro" id="panel-peligro">
+          <h2>🗑️ Eliminar incidencia</h2>
+          <p class="subtexto">
+            Borra esta incidencia junto con su historial y sus comentarios de forma permanente.
+            Esta acción no se puede deshacer.
+          </p>
+          <button type="button" id="btn-eliminar-incidencia" class="btn-eliminar">🗑️ Eliminar esta incidencia</button>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <div id="toast-container" class="toast-container"></div>
+
+  <!-- Modal de edición (solo lo abren Encargado/Administrador desde el panel) -->
+  <div class="modal-overlay" id="modal-editar" hidden>
+    <div class="modal-form">
+      <div class="modal-form-cabecera">
+        <h2>✏️ Editar incidencia</h2>
+        <button type="button" class="btn-cerrar-modal" data-cerrar-modal aria-label="Cerrar">✕</button>
+      </div>
+      <form id="form-editar" class="modal-form-cuerpo">
+        <label>
+          Título
+          <input type="text" id="edit-titulo" required maxlength="160" />
+        </label>
+        <label>
+          Descripción
+          <textarea id="edit-descripcion" rows="4" required></textarea>
+        </label>
+        <div class="modal-form-grid">
+          <label>
+            Área
+            <select id="edit-area"></select>
+          </label>
+          <label>
+            Categoría
+            <select id="edit-categoria"></select>
+          </label>
+          <label>
+            Prioridad
+            <select id="edit-prioridad"></select>
+          </label>
+          <label>
+            Impacto
+            <select id="edit-impacto"></select>
+          </label>
+        </div>
+        <p class="modal-form-nota">Cada campo modificado queda registrado en el historial de la incidencia.</p>
+        <div class="modal-form-acciones">
+          <button type="button" class="btn-cancelar" data-cerrar-modal>Cancelar</button>
+          <button type="submit" class="btn-guardar">Guardar cambios</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="ui.js"></script>
+  <script src="toast.js"></script>
+  <script src="chrome.js"></script>
+  <script src="detalle.js"></script>
+</body>
+</html>

@@ -1,0 +1,29 @@
+# Dependencias
+node_modules/
+
+# Secrets: NUNCA subir. Copiar ia.config.example.json -> ia.config.json y llenar la key.
+ia.config.json
+.env
+.env.*
+!.env.example
+
+# Base de datos (dumps / respaldos)
+*.sql
+*.dump
+dump.sql
+backups/
+
+# ...pero el esquema del proyecto sí se versiona
+!docs/*.sql
+
+# Logs
+*.log
+npm-debug.log*
+
+# Sistema operativo / editores
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/
+*.swp

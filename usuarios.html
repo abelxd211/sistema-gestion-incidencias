@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Gestión de usuarios</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <script>try{var t=localStorage.getItem('tema');if(t==='oscuro')document.documentElement.classList.add('tema-oscuro');}catch(e){}</script>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="sidebar-brand">
+        <span class="brand-mark">GI</span>
+        <span class="brand-name">Gestión de<br />Incidencias</span>
+      </div>
+
+      <nav class="sidebar-nav">
+        <a href="dashboard.html" class="nav-link"><span>Incidencias</span></a>
+        <a href="tablero.html" class="nav-link"><span>Tablero</span></a>
+        <a href="nueva.html" class="nav-link"><span>Registrar incidencia</span></a>
+        <a href="usuarios.html" class="nav-link link-nav active"><span>Usuarios</span></a>
+        <a href="reportes.html" class="nav-link link-nav"><span>Reportes</span></a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="user-chip">
+          <span class="user-avatar"></span>
+          <span id="usuario-actual"></span>
+        </div>
+        <button id="btn-logout" type="button">Cerrar sesión</button>
+      </div>
+    </aside>
+
+    <div class="main-area">
+      <header class="page-header">
+        <h1>👥 Usuarios</h1>
+      </header>
+
+      <main>
+        <section class="panel">
+          <h2>👤 Usuarios del sistema</h2>
+          <p class="subtexto">
+            Da de alta empleados y encargados, edita sus datos y desactiva cuentas.
+            Desactivar no borra nada: el historial de sus incidencias se conserva.
+          </p>
+
+          <div class="toolbar">
+            <input type="search" id="filtro-usuarios" class="toolbar-input" placeholder="🔎 Buscar por nombre o correo..." />
+            <select id="filtro-rol" class="toolbar-select" title="Filtrar por rol">
+              <option value="">Todos los roles</option>
+            </select>
+            <select id="filtro-estado" class="toolbar-select" title="Filtrar por estado">
+              <option value="">Todos</option>
+              <option value="activos">Solo activos</option>
+              <option value="inactivos">Solo inactivos</option>
+            </select>
+            <span id="contador-usuarios" class="contador-resultados"></span>
+          </div>
+
+          <div class="toolbar-acciones">
+            <button type="button" id="btn-nuevo-usuario" class="btn-guardar">➕ Nuevo usuario</button>
+          </div>
+
+          <table id="tabla-usuarios">
+            <thead>
+              <tr>
+                <th>Nombre</th>
+                <th>Correo</th>
+                <th>Rol</th>
+                <th>Área</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="tbody-usuarios"></tbody>
+          </table>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <div id="toast-container" class="toast-container"></div>
+
+  <!-- Modal: crear / editar usuario -->
+  <div class="modal-overlay" id="modal-usuario" hidden>
+    <div class="modal-form">
+      <div class="modal-form-cabecera">
+        <h2 id="modal-titulo">➕ Nuevo usuario</h2>
+        <button type="button" class="btn-cerrar-modal" data-cerrar-modal aria-label="Cerrar">✕</button>
+      </div>
+      <form id="form-usuario" class="modal-form-cuerpo">
+        <div class="modal-form-grid">
+          <label>
+            Nombre
+            <input type="text" id="u-nombre" required maxlength="100" />
+          </label>
+          <label>
+            Apellido
+            <input type="text" id="u-apellido" required maxlength="100" />
+          </label>
+        </div>
+        <label>
+          Correo (es su usuario de acceso)
+          <input type="email" id="u-email" required maxlength="150" placeholder="nombre.apellido@empresa.com" />
+        </label>
+        <label id="wrap-password">
+          Contraseña inicial
+          <input type="password" id="u-password" maxlength="100" placeholder="Mínimo 6 caracteres" autocomplete="new-password" />
+          <span class="sla-detalle">Se guarda cifrada; puedes cambiarla luego desde la BD.</span>
+        </label>
+        <div class="modal-form-grid">
+          <label>
+            Rol
+            <select id="u-rol"></select>
+          </label>
+          <label id="wrap-area">
+            Área
+            <select id="u-area"></select>
+            <span class="sla-detalle" id="nota-area">Los empleados solo pueden reportar incidencias de su área.</span>
+          </label>
+        </div>
+        <p class="modal-form-nota">El rol define qué puede ver y hacer la persona dentro del sistema.</p>
+        <div class="modal-form-acciones">
+          <button type="button" class="btn-cancelar" data-cerrar-modal>Cancelar</button>
+          <button type="submit" class="btn-guardar" id="btn-guardar-usuario">Guardar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: el Administrador restablece la contraseña de un usuario -->
+  <div class="modal-overlay" id="modal-password" hidden>
+    <div class="modal-form">
+      <div class="modal-form-cabecera">
+        <h2 id="modal-password-titulo">🔑 Cambiar contraseña</h2>
+        <button type="button" class="btn-cerrar-modal" data-cerrar-modal-password aria-label="Cerrar">✕</button>
+      </div>
+      <form id="form-password" class="modal-form-cuerpo">
+        <label>
+          Nueva contraseña
+          <input type="password" id="p-password" required minlength="6" maxlength="100"
+                 autocomplete="new-password" placeholder="Mínimo 6 caracteres" />
+          <span class="sla-detalle">Se guarda cifrada. Comunícale la nueva clave a la persona.</span>
+        </label>
+        <label>
+          Repetir contraseña
+          <input type="password" id="p-password2" required minlength="6" maxlength="100"
+                 autocomplete="new-password" placeholder="Escribe la misma clave" />
+        </label>
+        <p class="modal-form-nota">
+          La clave actual queda sin efecto de inmediato. Esta acción no se puede deshacer.
+        </p>
+        <div class="modal-form-acciones">
+          <button type="button" class="btn-cancelar" data-cerrar-modal-password>Cancelar</button>
+          <button type="submit" class="btn-guardar" id="btn-guardar-password">Cambiar contraseña</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="ui.js"></script>
+  <script src="toast.js"></script>
+  <script src="chrome.js"></script>
+  <script src="usuarios.js"></script>
+</body>
+</html>

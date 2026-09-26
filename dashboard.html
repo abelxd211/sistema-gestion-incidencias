@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Sistema de Gestión de Incidencias</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <script>try{var t=localStorage.getItem('tema');if(t==='oscuro')document.documentElement.classList.add('tema-oscuro');}catch(e){}</script>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="sidebar-brand">
+        <span class="brand-mark">GI</span>
+        <span class="brand-name">Gestión de<br />Incidencias</span>
+      </div>
+
+      <nav class="sidebar-nav">
+        <a href="dashboard.html" class="nav-link active"><span>Incidencias</span></a>
+        <a href="tablero.html" class="nav-link"><span>Tablero</span></a>
+        <a href="nueva.html" class="nav-link"><span>Registrar incidencia</span></a>
+        <a href="usuarios.html" class="nav-link link-nav"><span>Usuarios</span></a>
+        <a href="reportes.html" class="nav-link link-nav"><span>Reportes</span></a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="user-chip">
+          <span class="user-avatar"></span>
+          <span id="usuario-actual"></span>
+        </div>
+        <button id="btn-logout" type="button">Cerrar sesión</button>
+      </div>
+    </aside>
+
+    <div class="main-area">
+      <header class="page-header">
+        <h1>📋 Incidencias</h1>
+      </header>
+
+      <main>
+        <section class="panel">
+          <h2>🗂️ Incidencias registradas</h2>
+
+            <div id="banner-sla" class="banner-sla" hidden></div>
+
+            <div class="toolbar">
+              <input type="search" id="filtro-busqueda" class="toolbar-input" placeholder="🔎 Buscar por título, descripción, área, categoría..." />
+              <select id="filtro-estado" class="toolbar-select" title="Filtrar por estado">
+                <option value="">Estado</option>
+              </select>
+              <select id="filtro-prioridad" class="toolbar-select" title="Filtrar por prioridad">
+                <option value="">Prioridad</option>
+              </select>
+              <select id="filtro-impacto" class="toolbar-select" title="Filtrar por impacto">
+                <option value="">Impacto</option>
+              </select>
+              <select id="filtro-area" class="toolbar-select" title="Filtrar por área">
+                <option value="">Área</option>
+              </select>
+              <span id="contador-resultados" class="contador-resultados"></span>
+            </div>
+
+            <div class="toolbar-acciones">
+              <button type="button" id="btn-csv" class="btn-exportar">📄 CSV</button>
+              <button type="button" id="btn-excel" class="btn-exportar">📊 Excel</button>
+              <button type="button" id="btn-pdf" class="btn-exportar">🖨️ PDF</button>
+              <button type="button" id="btn-imprimir" class="btn-exportar">✨ Imprimir</button>
+            </div>
+
+            <table id="tabla-incidencias">
+              <thead>
+                <tr>
+                  <th data-col="id" class="sortable">#</th>
+                  <th data-col="titulo" class="sortable">Título</th>
+                  <th data-col="area" class="sortable">Área</th>
+                  <th data-col="categoria" class="sortable">Categoría</th>
+                  <th data-col="prioridad" class="sortable">Prioridad</th>
+                  <th data-col="impacto" class="sortable">Impacto</th>
+                  <th data-col="estado" class="sortable">Estado</th>
+                  <th>SLA</th>
+                  <th data-col="fecha" class="sortable sort-desc">Fecha</th>
+                </tr>
+              </thead>
+              <tbody id="tbody-incidencias"></tbody>
+            </table>
+          </section>
+      </main>
+    </div>
+  </div>
+
+  <div id="toast-container" class="toast-container"></div>
+
+  <script src="ui.js"></script>
+  <script src="toast.js"></script>
+  <script src="chrome.js"></script>
+  <script src="renderer.js"></script>
+</body>
+</html>

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Iniciar sesión</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <script>try{var t=localStorage.getItem('tema');if(t==='oscuro')document.documentElement.classList.add('tema-oscuro');}catch(e){}</script>
+</head>
+<body class="login-body">
+  <div class="login-box">
+    <div class="login-brand">
+      <span class="brand-mark" style="width:38px;height:38px;font-size:15px;">GI</span>
+      <div>
+        <h1>Sistema de Gestión de Incidencias</h1>
+      </div>
+    </div>
+    <p class="subtitle">Inicia sesión para continuar</p>
+
+    <form id="form-login">
+      <label>
+        Correo
+        <input type="email" id="email" required autofocus />
+      </label>
+
+      <label>
+        Contraseña
+        <input type="password" id="password" required />
+      </label>
+
+      <p id="mensaje-error" class="error-msg"></p>
+
+      <button type="submit">Entrar</button>
+    </form>
+  </div>
+
+  <script src="login.js"></script>
+</body>
+</html>

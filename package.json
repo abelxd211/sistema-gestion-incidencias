@@ -1,0 +1,28 @@
+{
+  "name": "sistema-gestion-incidencias",
+  "version": "1.0.0",
+  "description": "Sistema de gestión de incidencias de escritorio (Electron + MySQL) con roles, Kanban, SLA, IA y reportes.",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "seed:admin": "node seed-admin.js",
+    "seed:usuarios": "node seed-usuarios-prueba.js"
+  },
+  "keywords": [
+    "electron",
+    "mysql",
+    "sistema-de-tickets",
+    "incidencias",
+    "kanban",
+    "sla"
+  ],
+  "author": "abelxd211",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^33.0.0"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "mysql2": "^3.11.0"
+  }
+}

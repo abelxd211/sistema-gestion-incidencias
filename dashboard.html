@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <title>Sistema de Gestión de Incidencias</title>
+  <title>Incidencias · Sistema de Gestión de Incidencias</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
@@ -14,15 +14,14 @@
     <aside class="sidebar">
       <div class="sidebar-brand">
         <span class="brand-mark">GI</span>
-        <span class="brand-name">Gestión de<br />Incidencias</span>
       </div>
 
       <nav class="sidebar-nav">
-        <a href="dashboard.html" class="nav-link active"><span>Incidencias</span></a>
-        <a href="tablero.html" class="nav-link"><span>Tablero</span></a>
-        <a href="nueva.html" class="nav-link"><span>Registrar incidencia</span></a>
-        <a href="usuarios.html" class="nav-link link-nav"><span>Usuarios</span></a>
-        <a href="reportes.html" class="nav-link link-nav"><span>Reportes</span></a>
+        <a href="dashboard.html" class="nav-link active" title="Incidencias" data-label="Incidencias">🏠</a>
+        <a href="tablero.html" class="nav-link" title="Tablero" data-label="Tablero">📋</a>
+        <a href="nueva.html" class="nav-link" title="Registrar incidencia" data-label="Registrar incidencia">＋</a>
+        <a href="usuarios.html" class="nav-link link-nav" title="Usuarios" data-label="Usuarios">👥</a>
+        <a href="reportes.html" class="nav-link link-nav" title="Reportes" data-label="Reportes">📊</a>
       </nav>
 
       <div class="sidebar-footer">
@@ -30,62 +29,69 @@
           <span class="user-avatar"></span>
           <span id="usuario-actual"></span>
         </div>
-        <button id="btn-logout" type="button">Cerrar sesión</button>
+        <button id="btn-logout" type="button" title="Cerrar sesión">⏻</button>
       </div>
     </aside>
 
     <div class="main-area">
       <header class="page-header">
-        <h1>📋 Incidencias</h1>
+        <div>
+          <h1>Incidencias</h1>
+          <p class="subtitle">Registro, filtro y seguimiento de todas las incidencias</p>
+        </div>
       </header>
 
       <main>
+        <div id="banner-sla" class="banner-sla" hidden></div>
+
         <section class="panel">
-          <h2>🗂️ Incidencias registradas</h2>
+          <h2>Incidencias registradas</h2>
 
-            <div id="banner-sla" class="banner-sla" hidden></div>
+          <div class="toolbar">
+            <input type="search" id="filtro-busqueda" class="toolbar-input"
+                   placeholder="🔎 Buscar por título, descripción, área, categoría, estado, prioridad o impacto..."
+                   title="Busca en todos los campos de la tabla. Combínalo con los filtros de la derecha." />
+            <select id="filtro-estado" class="toolbar-select" title="Filtrar por estado">
+              <option value="">Estado</option>
+            </select>
+            <select id="filtro-prioridad" class="toolbar-select" title="Filtrar por prioridad">
+              <option value="">Prioridad</option>
+            </select>
+            <select id="filtro-impacto" class="toolbar-select" title="Filtrar por impacto">
+              <option value="">Impacto</option>
+            </select>
+            <select id="filtro-area" class="toolbar-select" title="Filtrar por área">
+              <option value="">Área</option>
+            </select>
+            <span id="contador-resultados" class="contador-resultados"></span>
+          </div>
 
-            <div class="toolbar">
-              <input type="search" id="filtro-busqueda" class="toolbar-input" placeholder="🔎 Buscar por título, descripción, área, categoría, estado, prioridad o impacto..." title="Busca en todos los campos de la tabla. Combínalo con los filtros de la derecha." />
-              <select id="filtro-estado" class="toolbar-select" title="Filtrar por estado">
-                <option value="">Estado</option>
-              </select>
-              <select id="filtro-prioridad" class="toolbar-select" title="Filtrar por prioridad">
-                <option value="">Prioridad</option>
-              </select>
-              <select id="filtro-impacto" class="toolbar-select" title="Filtrar por impacto">
-                <option value="">Impacto</option>
-              </select>
-              <select id="filtro-area" class="toolbar-select" title="Filtrar por área">
-                <option value="">Área</option>
-              </select>
-              <span id="contador-resultados" class="contador-resultados"></span>
-            </div>
+          <div class="toolbar-acciones" style="margin-bottom:14px;">
+            <button id="btn-csv" class="btn-exportar" type="button" title="Exportar a CSV">⬇ CSV</button>
+            <button id="btn-excel" class="btn-exportar" type="button" title="Exportar a Excel">⬇ Excel</button>
+            <button id="btn-pdf" class="btn-exportar" type="button" title="Exportar a PDF">⬇ PDF</button>
+            <button id="btn-imprimir" class="btn-exportar" type="button" title="Imprimir">🖨 Imprimir</button>
+          </div>
 
-            <div class="toolbar-acciones">
-              <button type="button" id="btn-csv" class="btn-exportar">📄 CSV</button>
-              <button type="button" id="btn-excel" class="btn-exportar">📊 Excel</button>
-              <button type="button" id="btn-pdf" class="btn-exportar">🖨️ PDF</button>
-              <button type="button" id="btn-imprimir" class="btn-exportar">✨ Imprimir</button>
-            </div>
-
+          <div class="tabla-scroll">
             <table id="tabla-incidencias">
               <thead>
                 <tr>
-                  <th data-col="id" class="sortable">#</th>
-                  <th data-col="titulo" class="sortable">Título</th>
-                  <th data-col="area" class="sortable">Área</th>
-                  <th data-col="categoria" class="sortable">Categoría</th>
-                  <th data-col="prioridad" class="sortable">Prioridad</th>
-                  <th data-col="impacto" class="sortable">Impacto</th>
-                  <th data-col="estado" class="sortable">Estado</th>
-                  <th>SLA</th>
-                  <th data-col="fecha" class="sortable sort-desc">Fecha</th>
+                  <th data-col="id" class="sortable" title="Ordenar por número">#</th>
+                  <th data-col="titulo" class="sortable" title="Ordenar por título">Título</th>
+                  <th data-col="area" class="sortable" title="Ordenar por área">Área</th>
+                  <th data-col="categoria" class="sortable" title="Ordenar por categoría">Categoría</th>
+                  <th data-col="prioridad" class="sortable" title="Ordenar por prioridad">Prioridad</th>
+                  <th data-col="impacto" class="sortable" title="Ordenar por impacto">Impacto</th>
+                  <th data-col="estado" class="sortable" title="Ordenar por estado">Estado</th>
+                  <th title="Estado del plazo de resolución">SLA</th>
+                  <th data-col="fecha" class="sortable sort-desc" title="Ordenar por fecha">Fecha</th>
                 </tr>
               </thead>
               <tbody id="tbody-incidencias"></tbody>
             </table>
-          </section>
+          </div>
+        </section>
       </main>
     </div>
   </div>

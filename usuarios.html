@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <title>Gestión de usuarios</title>
+  <title>Usuarios · Sistema de Gestión de Incidencias</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
@@ -14,15 +14,14 @@
     <aside class="sidebar">
       <div class="sidebar-brand">
         <span class="brand-mark">GI</span>
-        <span class="brand-name">Gestión de<br />Incidencias</span>
       </div>
 
       <nav class="sidebar-nav">
-        <a href="dashboard.html" class="nav-link"><span>Incidencias</span></a>
-        <a href="tablero.html" class="nav-link"><span>Tablero</span></a>
-        <a href="nueva.html" class="nav-link"><span>Registrar incidencia</span></a>
-        <a href="usuarios.html" class="nav-link link-nav active"><span>Usuarios</span></a>
-        <a href="reportes.html" class="nav-link link-nav"><span>Reportes</span></a>
+        <a href="dashboard.html" class="nav-link" title="Incidencias" data-label="Incidencias">🏠</a>
+        <a href="tablero.html" class="nav-link" title="Tablero" data-label="Tablero">📋</a>
+        <a href="nueva.html" class="nav-link" title="Registrar incidencia" data-label="Registrar incidencia">＋</a>
+        <a href="usuarios.html" class="nav-link link-nav active" title="Usuarios" data-label="Usuarios">👥</a>
+        <a href="reportes.html" class="nav-link link-nav" title="Reportes" data-label="Reportes">📊</a>
       </nav>
 
       <div class="sidebar-footer">
@@ -30,18 +29,21 @@
           <span class="user-avatar"></span>
           <span id="usuario-actual"></span>
         </div>
-        <button id="btn-logout" type="button">Cerrar sesión</button>
+        <button id="btn-logout" type="button" title="Cerrar sesión">⏻</button>
       </div>
     </aside>
 
     <div class="main-area">
       <header class="page-header">
-        <h1>👥 Usuarios</h1>
+        <div>
+          <h1>Usuarios</h1>
+          <p class="subtitle">Alta, edición y desactivación de cuentas</p>
+        </div>
       </header>
 
       <main>
         <section class="panel">
-          <h2>👤 Usuarios del sistema</h2>
+          <h2>Usuarios del sistema</h2>
           <p class="subtexto">
             Da de alta empleados y encargados, edita sus datos y desactiva cuentas.
             Desactivar no borra nada: el historial de sus incidencias se conserva.
@@ -61,7 +63,7 @@
           </div>
 
           <div class="toolbar-acciones">
-            <button type="button" id="btn-nuevo-usuario" class="btn-guardar">➕ Nuevo usuario</button>
+            <button type="button" id="btn-nuevo-usuario" class="btn-guardar">Nuevo usuario</button>
           </div>
 
           <table id="tabla-usuarios">
@@ -88,7 +90,7 @@
   <div class="modal-overlay" id="modal-usuario" hidden>
     <div class="modal-form">
       <div class="modal-form-cabecera">
-        <h2 id="modal-titulo">➕ Nuevo usuario</h2>
+        <h2 id="modal-titulo">Nuevo usuario</h2>
         <button type="button" class="btn-cerrar-modal" data-cerrar-modal aria-label="Cerrar">✕</button>
       </div>
       <form id="form-usuario" class="modal-form-cuerpo">
@@ -135,7 +137,7 @@
   <div class="modal-overlay" id="modal-password" hidden>
     <div class="modal-form">
       <div class="modal-form-cabecera">
-        <h2 id="modal-password-titulo">🔑 Cambiar contraseña</h2>
+        <h2 id="modal-password-titulo">Cambiar contraseña</h2>
         <button type="button" class="btn-cerrar-modal" data-cerrar-modal-password aria-label="Cerrar">✕</button>
       </div>
       <form id="form-password" class="modal-form-cuerpo">

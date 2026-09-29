@@ -30,7 +30,10 @@
 
     const actualizarEtiqueta = () => {
       const oscuro = document.documentElement.classList.contains('tema-oscuro');
-      boton.textContent = oscuro ? '☀️ Modo claro' : '🌙 Modo oscuro';
+      boton.textContent = oscuro ? '☀️' : '🌙';
+      const texto = oscuro ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro';
+      boton.title = texto;
+      boton.setAttribute('aria-label', texto);
     };
 
     boton.addEventListener('click', () => {
@@ -42,6 +45,38 @@
 
     actualizarEtiqueta();
   }
+
+  // ---------------------------------------------------------------
+  // Iniciales del usuario en el avatar del pie del sidebar
+  // ---------------------------------------------------------------
+  function pintarAvatar() {
+    const avatar = document.querySelector('.sidebar-footer .user-avatar');
+    const nombre = document.getElementById('usuario-actual');
+    if (!avatar || !nombre) return;
+
+    const texto = (nombre.textContent || '').trim();
+    if (!texto) return;
+
+    const partes = texto.split(/\s+/).filter(Boolean);
+    const iniciales = (partes.length > 1
+      ? partes[0][0] + partes[1][0]
+      : partes[0].slice(0, 2)).toUpperCase();
+
+    // Guarda: evita reescribir y disparar el observer otra vez.
+    if (avatar.textContent !== iniciales) avatar.textContent = iniciales;
+    avatar.title = texto;
+  }
+
+  // El nombre lo escribe cada página al cargar el usuario actual.
+  const nombreUsuario = document.getElementById('usuario-actual');
+  if (nombreUsuario) {
+    new MutationObserver(pintarAvatar).observe(nombreUsuario, {
+      childList: true,
+      characterData: true,
+      subtree: true,
+    });
+  }
+  pintarAvatar();
 
   // ---------------------------------------------------------------
   // Campana de notificaciones

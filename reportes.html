@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <title>Reportes y análisis</title>
+  <title>Reportes · Sistema de Gestión de Incidencias</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
@@ -14,15 +14,14 @@
     <aside class="sidebar">
       <div class="sidebar-brand">
         <span class="brand-mark">GI</span>
-        <span class="brand-name">Gestión de<br />Incidencias</span>
       </div>
 
       <nav class="sidebar-nav">
-        <a href="dashboard.html" class="nav-link"><span>Incidencias</span></a>
-        <a href="tablero.html" class="nav-link"><span>Tablero</span></a>
-        <a href="nueva.html" class="nav-link"><span>Registrar incidencia</span></a>
-        <a href="usuarios.html" class="nav-link link-nav"><span>Usuarios</span></a>
-        <a href="reportes.html" class="nav-link link-nav active"><span>Reportes</span></a>
+        <a href="dashboard.html" class="nav-link" title="Incidencias" data-label="Incidencias">🏠</a>
+        <a href="tablero.html" class="nav-link" title="Tablero" data-label="Tablero">📋</a>
+        <a href="nueva.html" class="nav-link" title="Registrar incidencia" data-label="Registrar incidencia">＋</a>
+        <a href="usuarios.html" class="nav-link link-nav" title="Usuarios" data-label="Usuarios">👥</a>
+        <a href="reportes.html" class="nav-link link-nav active" title="Reportes" data-label="Reportes">📊</a>
       </nav>
 
       <div class="sidebar-footer">
@@ -30,44 +29,53 @@
           <span class="user-avatar"></span>
           <span id="usuario-actual"></span>
         </div>
-        <button id="btn-logout" type="button">Cerrar sesión</button>
+        <button id="btn-logout" type="button" title="Cerrar sesión">⏻</button>
       </div>
     </aside>
 
     <div class="main-area">
       <header class="page-header">
-        <h1>📊 Reportes y análisis</h1>
+        <div>
+          <h1>Reportes</h1>
+          <p class="subtitle">Indicadores de cumplimiento del SLA, distribución y puntos calientes</p>
+        </div>
       </header>
 
       <main>
         <div class="toolbar-acciones">
-          <button type="button" id="btn-csv" class="btn-exportar">📄 CSV</button>
-          <button type="button" id="btn-excel" class="btn-exportar">📊 Excel</button>
-          <button type="button" id="btn-pdf" class="btn-exportar">🖨️ PDF</button>
-          <button type="button" id="btn-imprimir" class="btn-exportar">✨ Imprimir</button>
+          <button type="button" id="btn-csv" class="btn-exportar" title="Exportar a CSV">⬇ CSV</button>
+          <button type="button" id="btn-excel" class="btn-exportar" title="Exportar a Excel">⬇ Excel</button>
+          <button type="button" id="btn-pdf" class="btn-exportar" title="Exportar a PDF">⬇ PDF</button>
+          <button type="button" id="btn-imprimir" class="btn-exportar" title="Imprimir">🖨 Imprimir</button>
         </div>
+
+        <nav class="subtabs">
+          <a class="subtab active" href="#sla">Cumplimiento SLA</a>
+          <a class="subtab" href="#graficos">Distribución</a>
+          <a class="subtab" href="#recurrentes">Recurrentes</a>
+        </nav>
 
         <div class="tarjetas-resumen">
           <div class="tarjeta">
             <span class="tarjeta-numero" id="total-incidencias">—</span>
-            <span class="tarjeta-etiqueta">📌 Incidencias totales</span>
+            <span class="tarjeta-etiqueta">Incidencias totales</span>
           </div>
           <div class="tarjeta">
             <span class="tarjeta-numero" id="tiempo-promedio">—</span>
-            <span class="tarjeta-etiqueta">⏱️ Horas promedio de resolución</span>
+            <span class="tarjeta-etiqueta">Horas promedio de resolución</span>
           </div>
           <div class="tarjeta">
             <span class="tarjeta-numero" id="sla-cumplimiento">—</span>
-            <span class="tarjeta-etiqueta">🎯 Cumplimiento del SLA</span>
+            <span class="tarjeta-etiqueta">Cumplimiento del SLA</span>
           </div>
           <div class="tarjeta">
             <span class="tarjeta-numero" id="sla-vencidas">—</span>
-            <span class="tarjeta-etiqueta">🚨 Abiertas ya vencidas</span>
+            <span class="tarjeta-etiqueta">Abiertas ya vencidas</span>
           </div>
         </div>
 
-        <section class="panel" style="margin-top:18px;">
-          <h2>🎯 Cumplimiento del SLA</h2>
+        <section class="panel" id="sla" style="margin-top:18px;">
+          <h2>Cumplimiento del SLA</h2>
           <p class="subtexto">
             Porcentaje de incidencias <strong>resueltas dentro del plazo pactado</strong> según su
             prioridad (Baja 72 h · Media 48 h · Alta 24 h · Crítica 6 h). Solo se cuentan las que
@@ -77,8 +85,8 @@
           <div id="sla-por-prioridad" class="grafico-barras" style="margin-top:14px;"></div>
         </section>
 
-        <section class="panel" style="margin-top:18px;">
-          <h2>🏢 Cumplimiento por área</h2>
+        <section class="panel" id="sla-area" style="margin-top:18px;">
+          <h2>Cumplimiento por área</h2>
           <p class="subtexto">Ordenado de peor a mejor cumplimiento.</p>
           <div class="tabla-scroll">
             <table id="tabla-sla-area">
@@ -95,8 +103,8 @@
           </div>
         </section>
 
-        <section class="panel" style="margin-top:18px;">
-          <h2>👤 Cumplimiento por responsable</h2>
+        <section class="panel" id="sla-responsable" style="margin-top:18px;">
+          <h2>Cumplimiento por responsable</h2>
           <p class="subtexto">Solo incidencias que tienen responsable asignado.</p>
           <div class="tabla-scroll">
             <table id="tabla-sla-responsable">
@@ -113,8 +121,8 @@
           </div>
         </section>
 
-        <section class="panel" style="margin-top:18px;">
-          <h2>🚨 Abiertas que ya superaron su SLA</h2>
+        <section class="panel" id="sla-vencidas-panel" style="margin-top:18px;">
+          <h2>Abiertas que ya superaron su SLA</h2>
           <p class="subtexto">
             Incidencias sin resolver cuyo plazo ya venció. Es el riesgo actual: requieren
             atención inmediata.
@@ -136,25 +144,25 @@
           </div>
         </section>
 
-        <div class="detalle-grid">
+        <div class="detalle-grid" id="graficos" style="margin-top:18px;">
           <section class="panel">
-            <h2>📊 Distribución por estado</h2>
+            <h2>Distribución por estado</h2>
             <div id="grafico-estado" class="grafico-barras"></div>
           </section>
 
           <section class="panel">
-            <h2>🔥 Problemas más frecuentes (categoría)</h2>
+            <h2>Problemas más frecuentes (categoría)</h2>
             <div id="grafico-categoria" class="grafico-barras"></div>
           </section>
         </div>
 
-        <section class="panel" style="margin-top:18px;">
-          <h2>🏢 Áreas con más reportes</h2>
+        <section class="panel" id="grafico-area-panel" style="margin-top:18px;">
+          <h2>Áreas con más reportes</h2>
           <div id="grafico-area" class="grafico-barras"></div>
         </section>
 
-        <section class="panel" style="margin-top:18px;">
-          <h2>🔁 Incidencias recurrentes (área + categoría)</h2>
+        <section class="panel" id="recurrentes" style="margin-top:18px;">
+          <h2>Incidencias recurrentes (área + categoría)</h2>
           <p class="subtexto">
             Combinaciones de área + categoría que se han repetido 2 veces o más — una señal de que
             algo en esa área o categoría necesita atención estructural, no solo una solución puntual.
@@ -172,8 +180,8 @@
           </table>
         </section>
 
-        <section class="panel" style="margin-top:18px;">
-          <h2>🔥 Áreas con incidencias repetidas (2 o más)</h2>
+        <section class="panel" id="areas-calientes" style="margin-top:18px;">
+          <h2>Áreas con incidencias repetidas (2 o más)</h2>
           <p class="subtexto">
             Áreas que acumulan 2 o más incidencias en total, sin importar si son del mismo tipo.
             Muestra dónde se concentra el trabajo y si se trata de un mismo problema repetido

@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <title>Iniciar sesión</title>
+  <title>Iniciar sesión · Sistema de Gestión de Incidencias</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
@@ -12,30 +12,35 @@
 <body class="login-body">
   <div class="login-box">
     <div class="login-brand">
-      <span class="brand-mark" style="width:38px;height:38px;font-size:15px;">GI</span>
+      <span class="brand-mark" style="width:40px;height:40px;font-size:15px;">GI</span>
       <div>
-        <h1>Sistema de Gestión de Incidencias</h1>
+        <h1>Sistema de Gestión<br />de Incidencias</h1>
+        <span class="subtitle">Panel de soporte interno</span>
       </div>
     </div>
-    <p class="subtitle">Inicia sesión para continuar</p>
 
-    <form id="form-login">
-      <label>
-        Correo
-        <input type="email" id="email" required autofocus />
-      </label>
+    <div class="login-cuerpo">
+      <form id="form-login">
+        <label>
+          Correo electrónico
+          <input type="email" id="email" required autofocus placeholder="tucorreo@empresa.com" autocomplete="username" />
+        </label>
 
-      <label>
-        Contraseña
-        <input type="password" id="password" required />
-      </label>
+        <label>
+          Contraseña
+          <input type="password" id="password" required placeholder="••••••••" autocomplete="current-password" />
+        </label>
 
-      <p id="mensaje-error" class="error-msg"></p>
+        <p id="mensaje-error" class="error-msg"></p>
 
-      <button type="submit">Entrar</button>
-    </form>
+        <button type="submit" style="width:100%;margin-top:10px;">Entrar al sistema</button>
+      </form>
+    </div>
   </div>
 
+  <div id="toast-container" class="toast-container"></div>
+
+  <script src="toast.js"></script>
   <script src="login.js"></script>
 </body>
 </html>

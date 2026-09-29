@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <title>Tablero Kanban</title>
+  <title>Tablero · Sistema de Gestión de Incidencias</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
@@ -14,15 +14,14 @@
     <aside class="sidebar">
       <div class="sidebar-brand">
         <span class="brand-mark">GI</span>
-        <span class="brand-name">Gestión de<br />Incidencias</span>
       </div>
 
       <nav class="sidebar-nav">
-        <a href="dashboard.html" class="nav-link"><span>Incidencias</span></a>
-        <a href="tablero.html" class="nav-link active"><span>Tablero</span></a>
-        <a href="nueva.html" class="nav-link"><span>Registrar incidencia</span></a>
-        <a href="usuarios.html" class="nav-link link-nav"><span>Usuarios</span></a>
-        <a href="reportes.html" class="nav-link link-nav"><span>Reportes</span></a>
+        <a href="dashboard.html" class="nav-link" title="Incidencias" data-label="Incidencias">🏠</a>
+        <a href="tablero.html" class="nav-link active" title="Tablero" data-label="Tablero">📋</a>
+        <a href="nueva.html" class="nav-link" title="Registrar incidencia" data-label="Registrar incidencia">＋</a>
+        <a href="usuarios.html" class="nav-link link-nav" title="Usuarios" data-label="Usuarios">👥</a>
+        <a href="reportes.html" class="nav-link link-nav" title="Reportes" data-label="Reportes">📊</a>
       </nav>
 
       <div class="sidebar-footer">
@@ -30,21 +29,24 @@
           <span class="user-avatar"></span>
           <span id="usuario-actual"></span>
         </div>
-        <button id="btn-logout" type="button">Cerrar sesión</button>
+        <button id="btn-logout" type="button" title="Cerrar sesión">⏻</button>
       </div>
     </aside>
 
     <div class="main-area">
       <header class="page-header">
-        <h1>📋 Tablero Kanban</h1>
+        <div>
+          <h1>Tablero Kanban</h1>
+          <p class="subtitle">Arrastra una tarjeta para cambiar su estado</p>
+        </div>
       </header>
 
       <main>
         <section class="panel">
           <h2>Incidencias por estado</h2>
           <p class="subtexto">
-            Arrastra una tarjeta a otra columna para cambiar su estado. El movimiento queda
-            registrado en el historial de la incidencia.
+            Cada movimiento queda registrado en el historial de la incidencia y notifica
+            al responsable asignado. Las tarjetas con el SLA vencido están marcadas en rojo.
           </p>
           <div id="kanban" class="kanban"></div>
         </section>

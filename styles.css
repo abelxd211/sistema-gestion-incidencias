@@ -75,6 +75,13 @@
   box-sizing: border-box;
 }
 
+/* Necesaria: muchos componentes usan display:flex/grid, que ganaría en
+   cascada al display:none que el navegador aplica a [hidden].
+   Sin esto, ocultar un modal con el atributo hidden no lo oculta. */
+[hidden] {
+  display: none !important;
+}
+
 html, body {
   height: 100%;
   margin: 0;
@@ -197,9 +204,9 @@ a {
 }
 
 .nav-link:hover {
-  background: var(--sidebar-hover);
-  color: #fff;
-}
+  background: #fff;
+  color: var(--purple-hover);
+  }
 
 .nav-link.active {
   background: rgba(255, 255, 255, 0.25);
@@ -1604,20 +1611,23 @@ button:disabled {
   font-size: 12.5px;
 }
 
-/* Chip de usuario en el pie del sidebar */
+/* Chip de usuario en el pie del sidebar.
+   La barra mide 64px, así que el nombre se envuelve en varias líneas
+   en vez de truncarse: se lee entero y el avatar ya da el nombre completo
+   en el tooltip. */
 .user-chip {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 4px;
   color: var(--sidebar-text);
-  font-size: 10px;
+  font-size: 9.5px;
+  line-height: 1.3;
   text-align: center;
-  max-width: 56px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
+  width: 100%;
+  padding: 0 3px;
+  overflow-wrap: anywhere;
+  }
 
 /* Enlaces de navegación solo para Administrador.
    El JS los oculta con display:none; la regla debe ganar por orden de cascada. */

@@ -134,6 +134,12 @@ async function protegerSesionYMostrarUsuario() {
   }
   document.getElementById('usuario-actual').textContent =
     `${usuario.nombre} ${usuario.apellido} (${usuario.rol})`;
+
+  // Los enlaces de gestión (usuarios, reportes) son exclusivos del Administrador.
+  if (usuario.rol !== 'Administrador') {
+    document.querySelectorAll('.link-nav').forEach((l) => (l.style.display = 'none'));
+  }
+
   document.getElementById('btn-logout').addEventListener('click', async () => {
     await window.api.logout();
     window.location.href = 'login.html';

@@ -1,6 +1,10 @@
 // ui.js
 // Utilidades compartidas de UI usadas por todas las páginas (dashboard, detalle, reportes).
 
+function pluralizar(n, singular, plural) {
+  return Number(n) === 1 ? singular : plural;
+}
+
 function obtenerBadgeEstado(estado, colorDesdeBD) {
   const normalizado = (estado || '').toLowerCase().replace(/\s+/g, ' ');
   const colores = {

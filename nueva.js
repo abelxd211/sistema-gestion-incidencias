@@ -81,7 +81,7 @@ btnSugerirIA.addEventListener('click', async () => {
     }
 
     if (aplicadas.length) {
-      mostrarToast(`IA: ${aplicadas.join(' y ')} sugerida(s) — revisa que sea correcta`, 'success');
+      mostrarToast(`IA: ${aplicadas.join(' y ')} ${pluralizar(aplicadas.length, 'sugerida', 'sugeridas')} — revisa que sea correcta`, 'success');
     } else {
       mostrarToast('La IA no encontró una coincidencia clara; sigue manual.', 'error');
     }

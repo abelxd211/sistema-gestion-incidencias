@@ -30,6 +30,7 @@ async function protegerSesionYMostrarUsuario() {
   if (usuario.rol !== 'Administrador') {
     document.querySelector('main').innerHTML =
       '<p>No tienes permiso para ver esta sección. <a href="dashboard.html">Volver al dashboard</a>.</p>';
+    document.querySelectorAll('.link-nav').forEach((l) => (l.style.display = 'none'));
     return null;
   }
 
@@ -97,7 +98,7 @@ function renderTabla(lista) {
     })
     .join('');
 
-  contador.textContent = `${lista.length} usuario(s)`;
+  contador.textContent = `${lista.length} ${pluralizar(lista.length, 'usuario', 'usuarios')}`;
 
   tbody.querySelectorAll('[data-password]').forEach((b) =>
     b.addEventListener('click', () => abrirModalPassword(Number(b.dataset.password)))

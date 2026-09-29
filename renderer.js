@@ -135,7 +135,7 @@ function renderTabla(incidencias) {
     )
     .join('');
 
-  contadorResultados.textContent = `${incidencias.length} incidencia(s)`;
+  contadorResultados.textContent = `${incidencias.length} ${pluralizar(incidencias.length, 'incidencia', 'incidencias')}`;
   actualizarBannerSLA();
 
   document.querySelectorAll('.fila-clicable').forEach((fila) => {
@@ -152,7 +152,7 @@ function actualizarBannerSLA() {
   const vencidas = contarSLAVencidas(filasVisibles);
   if (vencidas > 0) {
     banner.hidden = false;
-    banner.textContent = `⚠️ ${vencidas} incidencia(s) vencida(s) por SLA — requieren atención urgente.`;
+    banner.textContent = `⚠️ ${vencidas} ${pluralizar(vencidas, 'incidencia vencida', 'incidencias vencidas')} por SLA — requieren atención urgente.`;
   } else {
     banner.hidden = true;
   }

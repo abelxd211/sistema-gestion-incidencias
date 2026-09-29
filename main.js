@@ -191,7 +191,10 @@ async function obtenerCatalogos() {
   return cacheCatalogos;
 }
 
-ipcMain.handle('get-catalogos', () => obtenerCatalogos());
+ipcMain.handle('get-catalogos', () => {
+  if (!currentUser) throw new Error('No hay sesión activa.');
+  return obtenerCatalogos();
+});
 
 // Trae la lista de incidencias con los nombres de sus catálogos ya resueltos (JOIN).
 // Un Empleado solo ve las que él mismo reportó; Encargado y Administrador ven todas.
@@ -239,6 +242,9 @@ ipcMain.handle('crear-incidencia', async (event, data) => {
 
   const { titulo, descripcion, id_area, id_categoria, id_prioridad, id_impacto, id_usuario_asignado } = data;
 
+  const tituloLimpio = typeof titulo === 'string' ? titulo.trim() : '';
+  if (!tituloLimpio) throw new Error('El título es obligatorio.');
+
   // Un Empleado solo puede reportar incidencias de su propia área.
   // Encargado y Administrador pueden reportar en cualquier área.
   let idAreaFinal = id_area;
@@ -273,7 +279,7 @@ ipcMain.handle('crear-incidencia', async (event, data) => {
       (titulo, descripcion, id_area, id_categoria, id_prioridad, id_impacto, id_estado,
        id_usuario_reporta, id_usuario_asignado)
      VALUES (?, ?, ?, ?, ?, ?, 1, ?, ?)`,
-    [titulo, descripcion, idAreaFinal, id_categoria, id_prioridad, id_impacto,
+    [tituloLimpio, descripcion, idAreaFinal, id_categoria, id_prioridad, id_impacto,
      currentUser.id_usuario, responsable.id_usuario]
   );
 
@@ -284,7 +290,7 @@ ipcMain.handle('crear-incidencia', async (event, data) => {
     id_incidencia: result.insertId,
     id_usuario_destino: responsable.id_usuario,
     tipo: 'asignacion',
-    mensaje: `Se te asignó la incidencia: ${titulo}`
+    mensaje: `Se te asignó la incidencia: ${tituloLimpio}`
   });
 
   return { id_incidencia: result.insertId };
@@ -374,7 +380,7 @@ ipcMain.handle('editar-incidencia', async (event, data) => {
   return {
     success: true,
     cambios: cambios.length,
-    mensaje: `Incidencia actualizada (${cambios.length} campo(s) modificado(s)).`
+    mensaje: `Incidencia actualizada (${cambios.length} ${cambios.length === 1 ? 'campo modificado' : 'campos modificados'}).`
   };
 });
 
@@ -481,6 +487,28 @@ ipcMain.handle('editar-usuario', async (event, data) => {
   if (!emailLimpio) throw new Error('El correo es obligatorio.');
   validarEmail(emailLimpio);
 
+  const [[objetivo]] = await pool.query(
+    'SELECT r.nombre AS rol_actual, u.activo FROM usuarios u JOIN roles r ON r.id_rol = u.id_rol WHERE u.id_usuario = ?',
+    [id_usuario]
+  );
+  if (!objetivo) throw new Error('El usuario no existe.');
+
+  const [[rolNuevo]] = await pool.query('SELECT nombre FROM roles WHERE id_rol = ?', [id_rol]);
+  if (!rolNuevo) throw new Error('El rol seleccionado no es válido.');
+
+  if (Number(id_usuario) === currentUser.id_usuario && rolNuevo.nombre !== 'Administrador') {
+    throw new Error('No puedes cambiar tu propio rol.');
+  }
+
+  if (objetivo.rol_actual === 'Administrador' && rolNuevo.nombre !== 'Administrador') {
+    const [[adminCount]] = await pool.query(
+      "SELECT COUNT(*) AS total FROM usuarios u JOIN roles r ON r.id_rol = u.id_rol WHERE r.nombre = 'Administrador' AND u.activo = 1"
+    );
+    if (Number(adminCount.total) <= 1) {
+      throw new Error('Debe quedar al menos un Administrador.');
+    }
+  }
+
   const idAreaFinal = await resolverAreaSegunRol(id_rol, id_area);
 
   const [duplicado] = await pool.query(
@@ -554,7 +582,7 @@ ipcMain.handle('cambiar-password-usuario', async (event, data) => {
   await crearNotificacion({
     id_usuario_destino: id_usuario,
     tipo: 'password',
-    mensaje: `El Administrador restablecer tu contraseña de ${u.nombre} ${u.apellido}.`
+    mensaje: `El Administrador restableció la contraseña de ${u.nombre} ${u.apellido}.`
   });
 
   return { success: true };
@@ -643,6 +671,10 @@ ipcMain.handle('cambiar-estado', async (event, { id_incidencia, id_estado_nuevo 
     [id_incidencia]
   );
 
+  if (!actual) {
+    throw new Error('La incidencia no existe.');
+  }
+
   // Sin encargado asignado la incidencia no puede avanzar: primero hay que
   // asignarle un responsable (botón "Asignar responsable" en el detalle).
   if (!actual.id_usuario_asignado) {
@@ -653,10 +685,17 @@ ipcMain.handle('cambiar-estado', async (event, { id_incidencia, id_estado_nuevo 
   }
 
   const [[nuevo]] = await pool.query('SELECT nombre FROM estados WHERE id_estado = ?', [id_estado_nuevo]);
+  if (!nuevo) throw new Error('El estado destino no es válido.');
 
   let camposExtra = '';
-  if (nuevo.nombre === 'Resuelta') camposExtra = ', fecha_resolucion = NOW()';
-  if (nuevo.nombre === 'Cerrada') camposExtra = ', fecha_cierre = NOW()';
+  if (nuevo.nombre === 'Resuelta') {
+    camposExtra = ', fecha_resolucion = NOW()';
+  } else if (nuevo.nombre === 'Cerrada') {
+    camposExtra = ', fecha_cierre = NOW()';
+  } else {
+    // Al reabrir (Pendiente / En proceso) se limpian las fechas de cierre y resolución.
+    camposExtra = ', fecha_resolucion = NULL, fecha_cierre = NULL';
+  }
 
   await pool.query(
     `UPDATE incidencias SET id_estado = ?, fecha_actualizacion = NOW()${camposExtra} WHERE id_incidencia = ?`,
@@ -693,10 +732,18 @@ ipcMain.handle('asignar-responsable', async (event, { id_incidencia, id_usuario_
      WHERE i.id_incidencia = ?`,
     [id_incidencia]
   );
+  if (!actual) throw new Error('La incidencia no existe.');
+
   const [[nuevo]] = await pool.query(
-    `SELECT CONCAT(nombre, ' ', apellido) AS nombre_completo FROM usuarios WHERE id_usuario = ?`,
+    `SELECT u.id_usuario, CONCAT(u.nombre, ' ', u.apellido) AS nombre_completo
+     FROM usuarios u
+     JOIN roles r ON r.id_rol = u.id_rol
+     WHERE u.id_usuario = ? AND u.activo = 1 AND r.nombre IN ('Encargado', 'Administrador')`,
     [id_usuario_asignado]
   );
+  if (!nuevo) {
+    throw new Error('El encargado seleccionado no es válido o está inactivo.');
+  }
 
   await pool.query(
     'UPDATE incidencias SET id_usuario_asignado = ?, fecha_actualizacion = NOW() WHERE id_incidencia = ?',
@@ -726,6 +773,9 @@ ipcMain.handle('asignar-responsable', async (event, { id_incidencia, id_usuario_
 ipcMain.handle('agregar-comentario', async (event, { id_incidencia, comentario }) => {
   if (!currentUser) throw new Error('No hay sesión activa.');
 
+  const texto = typeof comentario === 'string' ? comentario.trim() : '';
+  if (!texto) throw new Error('El comentario no puede estar vacío.');
+
   const [[inc]] = await pool.query(
     'SELECT id_usuario_reporta, id_usuario_asignado FROM incidencias WHERE id_incidencia = ?',
     [id_incidencia]
@@ -737,9 +787,11 @@ ipcMain.handle('agregar-comentario', async (event, { id_incidencia, comentario }
     }
   }
 
+  if (!inc) throw new Error('La incidencia no existe.');
+
   await pool.query(
     'INSERT INTO comentarios_incidencias (id_incidencia, id_usuario, comentario) VALUES (?, ?, ?)',
-    [id_incidencia, currentUser.id_usuario, comentario]
+    [id_incidencia, currentUser.id_usuario, texto]
   );
 
   // Notifica al reportero y al responsable (evitando notificar al autor).
@@ -792,6 +844,8 @@ ipcMain.handle('eliminar-incidencia', async (event, id_incidencia) => {
   const conn = await pool.getConnection();
   try {
     await conn.beginTransaction();
+    const [[fila]] = await conn.query('SELECT id_incidencia FROM incidencias WHERE id_incidencia = ?', [id_incidencia]);
+    if (!fila) throw new Error('La incidencia no existe.');
     await conn.query('DELETE FROM historial_incidencias WHERE id_incidencia = ?', [id_incidencia]);
     await conn.query('DELETE FROM comentarios_incidencias WHERE id_incidencia = ?', [id_incidencia]);
     await conn.query('DELETE FROM notificaciones WHERE id_incidencia = ?', [id_incidencia]);
@@ -1157,8 +1211,9 @@ ipcMain.handle('sugerir-clasificacion', async (event, { titulo, descripcion }) =
 ipcMain.handle('generar-diagnostico', async (event, idIncidencia) => {
   if (!currentUser) throw new Error('No hay sesión activa.');
 
-  const { incidencia, historial, comentarios } = await cargarDetalleBasico(idIncidencia);
-  if (!incidencia) throw new Error('No se encontró la incidencia.');
+  const base = await cargarDetalleBasico(idIncidencia);
+  if (!base) throw new Error('No se encontró la incidencia.');
+  const { incidencia, historial, comentarios } = base;
 
   const historialTxt =
     historial.slice(-8).map(

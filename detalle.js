@@ -184,11 +184,16 @@ async function cargarTodo(usuario) {
   } catch (err) {
     panelInfo.innerHTML = `<p>No tienes permiso para ver esta incidencia.</p>`;
     document.getElementById('panel-gestion').style.display = 'none';
+    document.getElementById('panel-peligro').style.display = 'none';
+    document.getElementById('form-comentario').style.display = 'none';
     return;
   }
 
   if (!data) {
     panelInfo.innerHTML = '<p>No se encontró esta incidencia.</p>';
+    document.getElementById('panel-gestion').style.display = 'none';
+    document.getElementById('panel-peligro').style.display = 'none';
+    document.getElementById('form-comentario').style.display = 'none';
     return;
   }
 
